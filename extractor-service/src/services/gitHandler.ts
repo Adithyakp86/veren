@@ -7,8 +7,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export async function cloneRepo(repoUrl: string, frontend : string, backend: string) {
-    const projectId = crypto.randomBytes(6).toString('hex');
+export async function cloneRepo(repoUrl: string, frontend : string, backend: string, id: string, token:string) {
+    const projectId = id;
     const baseDir = path.join(__dirname, '../../clones', projectId);
     
     try {
@@ -16,8 +16,13 @@ export async function cloneRepo(repoUrl: string, frontend : string, backend: str
 
         fs.mkdirSync(baseDir, { recursive: true });
         
+        const authRepoUrl = repoUrl.replace(
+            "https://github.com/",
+            `https://${token}@github.com/`
+        );
+
         const git = simpleGit();
-        await git.clone(repoUrl, baseDir, ["--depth=1"]);
+        await git.clone(authRepoUrl, baseDir, ["--depth=1"]);
         
         // MAKING BACKEND AND FRONTEND DIRECTORIES
         const backendDir = path.join(baseDir, 'backend');

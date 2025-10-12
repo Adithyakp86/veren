@@ -4,7 +4,7 @@ import { cloneRepo } from "../services/gitHandler.js";
 
 export default async function urlController(req: Request, res: Response) {
   
-  const {id, urls:{repoUrl,frontend, backend}} = req.body;
+  const {id, urls:{repoUrl,frontend, backend},token} = req.body;
   
   if(!id || !frontend || !backend){
     return res.status(400).json({ success: false, message: "id and urls are required" });
@@ -13,7 +13,7 @@ export default async function urlController(req: Request, res: Response) {
   console.log("TIME FOR FORK:", repoUrl);
 
   try {
-    const {projectId, baseDir, backendDir, frontendDir} = await cloneRepo(repoUrl, frontend, backend);
+    const {projectId, baseDir, backendDir, frontendDir} = await cloneRepo(repoUrl, frontend, backend, id, token);
     
     console.log("CLONED:", projectId, baseDir, backendDir, frontendDir);
     
@@ -21,6 +21,7 @@ export default async function urlController(req: Request, res: Response) {
       success: true,
       id: projectId,
       repoUrl,
+      token,
       dir:{baseDir, backendDir, frontendDir},
       services: {
         backend: `${process.env.BASEURI}/backend/${projectId}`,

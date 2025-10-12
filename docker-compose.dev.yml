@@ -1,18 +1,13 @@
-version: "3.9"
 services:
   api-gateway:
     build:
       context: ./api-gateway
       dockerfile: Dockerfile.dev
     container_name: api-gateway
-    volumes:
-      - ./api-gateway:/src
-      - api_node_modules:/src/node_modules
     ports:
       - "8001:3000"
     env_file:
       - ./api-gateway/.env
-    command: ["npm", "run", "dev"]
     networks:
       - veren
 
@@ -28,7 +23,7 @@ services:
       - "8002:3000"
     env_file:
       - ./submission-service/.env
-    command: ["npm", "run", "dev"]
+    command: [ "npm", "run", "dev" ]
     networks:
       - veren
 
@@ -44,14 +39,28 @@ services:
       - "8003:3000"
     env_file:
       - ./extractor-service/.env
-    command: ["npm", "run", "dev"]
+    command: [ "npm", "run", "dev" ]
     networks:
       - veren
+
+  # postgres:
+  #   image: postgres:15
+  #   container_name: postgres
+  #   ports:
+  #     - "5432:5432"
+  #   env_file:
+  #     - ./api-gateway/postgres.env
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #   networks:
+  #     - veren
 
 volumes:
   api_node_modules:
   submission_node_modules:
   extractor_node_modules:
+  pgdata:
+
 
 networks:
   veren:

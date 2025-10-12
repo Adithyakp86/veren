@@ -11,16 +11,16 @@ const dataFilePath = path.join(__dirname, "../", "data.json");
 
 export default async function urlController(req: Request, res: Response) {
   try {
-    const { url } = req.body;
+    const { url, token } = req.body;
     console.log("urlController called with URL:", url);
 
-    if (!url) {
-      return res.status(400).json({ success: false, message: "URL is required" });
+    if (!url || !token) {
+      return res.status(400).json({ success: false, message: "URL and token are required" });
     }
 
-    console.log("📥 Received URL:", url);
+    console.log("📥 Received URL:", url, "and token:", token);
 
-    let data: Array<{ id: string; url: string }> = [];
+    let data: Array<{ id: string; url: string, token: string }> = [];
     try {
       const raw = await fs.readFile(dataFilePath, "utf-8");
       data = JSON.parse(raw);
@@ -30,7 +30,7 @@ export default async function urlController(req: Request, res: Response) {
 
     // Generate UUID and push new entry
     const id: string = nanoid(8);
-    data.push({ id, url });
+    data.push({ id, url, token });
 
     // Write back to file
     await fs.writeFile(dataFilePath,
@@ -38,13 +38,14 @@ export default async function urlController(req: Request, res: Response) {
 
  const response = await axios.post(
       "http://extractor-service:3000/api/v1/url",
-      { urls:{repoUrl:url,backend:`${url}/backend`, frontend:`${url}/frontend`}, id }
+      { urls:{repoUrl:url,backend:`${url}/backend`, frontend:`${url}/frontend`}, id, token }
     );
 
     res.json({
       success: true,
       id,
       url,
+      token,
       message: "URL accepted by submission-service",
     });
   } catch (err: any) {
