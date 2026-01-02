@@ -1,3 +1,4 @@
+console.log("REDIS_URL =", process.env.REDIS_URL);
 const { exec } = require("child_process");
 const path = require("path");
 const readDirRecursive = require("./utils/readDirRecursive");
@@ -14,11 +15,11 @@ const s3Client = new S3Client({
 });
 
 const publisher = redis.createClient({
-    username: process.env.REDIS_USERNAME,
-    password: process.env.REDIS_PASSWORD,
+    username: 'default',
+    password: 'hBDJYuzav1kvaIk0ayQjgdXvHJZydog5',
     socket: {
-        host: process.env.REDIS_HOSTNAME,
-        port: process.env.REDIS_PORT
+        host: 'redis-16711.c98.us-east-1-4.ec2.cloud.redislabs.com',
+        port: 16711
     }
 });
 
@@ -52,7 +53,8 @@ async function init() {
     const outDirPath = path.join(__dirname, "output")
     const frontendPath = path.join(outDirPath, process.env.FRONTENDPATH || "./");
     const buildCommand = process.env.BUILDCOMMAND || "npm run build";
-    const _process = exec(`cd ${frontendPath} && npm install && ${buildCommand}`)
+    const installCommand = process.env.INSTALLCOMMAND || "npm install";
+    const _process = exec(`cd ${frontendPath} && ${installCommand} && ${buildCommand}`)
 
     _process.stdout.on('data', async function (data) {
         console.log(data.toString())
