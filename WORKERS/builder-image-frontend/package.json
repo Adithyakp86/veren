@@ -12,7 +12,7 @@
   "description": "",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.955.0",
-    "mime-types": "^3.0.2",
-    "redis": "^5.10.0"
+    "kafkajs": "^2.2.4",
+    "mime-types": "^3.0.2"
   }
 }
