@@ -81,7 +81,7 @@ const createProject = asyncHandler(async (req: Request, res: Response) => {
     }
 
     return res.status(201).json(
-        new ApiResponse(201, {success: true},"Project created successfully")
+        new ApiResponse(201, {success: true, project},"Project created successfully")
     )
 })
 

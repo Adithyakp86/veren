@@ -74,7 +74,29 @@ const updateProjectConfigClone = asyncHandler(async (req: Request, res: Response
 })
 
 const updateProjectConfigBuild = asyncHandler(async (req: Request, res: Response) => {
+  const { projectId, deploymentId, FrontendtaskArn, BackendtaskArn } = req.body;
 
+  // Update deployment status to Building
+  await Deployment.findByIdAndUpdate(deploymentId, {
+    status: "building",
+    frontendTaskArn: FrontendtaskArn,
+    backendTaskArn: BackendtaskArn,
+  })
+  try {
+    
+  // axios.post(`http://notification-service:3000/api/v1/log/${deploymentId}`, {
+  //   projectId,
+  //   deploymentId,
+  //   FrontendtaskArn,
+  //   BackendtaskArn
+  // })
+
+  } catch (error:any) {
+    return new ApiError(500, "Something went wrong while sending request to noti. service", error)
+  }
+  return res.status(200).json({
+    status: "Recieved"
+  })
 })
 const getProjectConfigBuild = asyncHandler(async (req: Request, res: Response) => {
 

@@ -6,8 +6,6 @@ import Project from "../models/project.model.js";
 import Deployment from "../models/deployment.model.js";
 
 const deployProject = asyncHandler(async (req: Request, res: Response) => {
-  try {
-    {
   const { projectId } = req.params;
 
   if (!projectId || typeof projectId !== "string") {
@@ -74,10 +72,6 @@ const deployProject = asyncHandler(async (req: Request, res: Response) => {
 
   return res.status(200).json({ message: "Deployment triggered successfully" });
 
-}
-  } catch (error) {
-  console.log(error);   
-  }
 })
 
 const deployTo = asyncHandler(async (req: Request, res: Response) => {

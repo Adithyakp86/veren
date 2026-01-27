@@ -44,7 +44,6 @@ app.use(express.static('public'));
 
 // Routes Imports
 import healthCheckRouter from "./routes/healthCheck.route.js";
-import urlRouter from "./routes/url.route.js";
 import AuthHandler from "./routes/auth.route.js";   
 import RepoHandler from "./routes/repo.route.js";
 import DeploymentController from "./routes/deployment.route.js";
@@ -66,9 +65,6 @@ app.use("/api/v1/internal", InternalRouteHandler)
 // WORKER    -    Deploy - handles routing inside system
 app.use("/api/v1/deployment", DeploymentController)
 
-
-// Old deployment
-app.use("/api/v1/url", urlRouter)
 
 // Checks detaiks regarding repository
 app.use("/api/v1/repo", RepoHandler)

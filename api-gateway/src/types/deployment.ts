@@ -10,6 +10,9 @@ interface IDeployment {
     commitHash: string;
     commitMessage?: string;
     buildLogsUrl?: string;
+    frontendTaskArn: string;
+    backendTaskArn: string;
+    backendImageUrl: string;
     artifactUrl?: string;
     rollBackArtifactUrl?: string
     startedAt: Date;

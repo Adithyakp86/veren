@@ -8,6 +8,8 @@ import setAuthCookies from "../utils/auth/authCookies.js";
 import asyncHandler from "../utils/api-utils/asyncHandler.js";
 import User from "../models/user.model.js";
 import ApiResponse from "../utils/api-utils/ApiResponse.js";
+import { verifyJwt } from "../middlewares/auth.middlewares.js";
+import jwt from "jsonwebtoken";
 
 // LOGIN CONTROLLER
 const LoginController = asyncHandler(async (req: Request, res: Response) => {
@@ -131,4 +133,38 @@ const getMe = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
-export { LoginController, CallbackController, logOutController, getMe }
+const refreshAccessToken = asyncHandler(async (req:Request, res: Response)=>{
+    let incomingRefreshToken =req.cookies.refreshToken;
+    if(!incomingRefreshToken){
+        throw new ApiError(401, "Refresh Token is required");
+    }
+
+    try {
+        const decodedToken = jwt.verify(
+            incomingRefreshToken, 
+            process.env.REFRESH_TOKEN_SECRET!
+        ) as {tokenVersion: number, sub: string};
+
+        const user = await User.findById(decodedToken?.sub);
+        if(!user){
+            throw new ApiError(404, "Invalid refresh Token");
+        }
+
+        if(decodedToken?.tokenVersion! != user?.tokenVersion){
+            throw new ApiError(404, "Invalid Refresh Token");
+        }
+
+        const options = {
+
+        }
+        const newRefreshToken = user.generateRefreshToken();
+        const newAccessToken = user.generateAccessToken();
+
+        setAuthCookies(res, newAccessToken, newRefreshToken);
+        res.status(200).json(new ApiResponse(200, {newAccessToken, newRefreshToken}, "Refresh token generated successfully"));
+    } catch (error) {
+        throw new ApiError(404, "Failed to refresh refresh-token");
+    }
+})
+
+export { LoginController, refreshAccessToken, CallbackController, logOutController, getMe }

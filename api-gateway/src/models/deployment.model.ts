@@ -32,6 +32,15 @@ const deploymentSchema = new Schema<IDeployment>({
     buildLogsUrl: {
         type: String
     },
+    backendImageUrl: {
+        type: String
+    },
+    frontendTaskArn: {
+        type: String
+    },
+    backendTaskArn: {
+        type: String
+    },
     artifactUrl: {
         type: String
     },

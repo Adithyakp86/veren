@@ -1,16 +1,18 @@
 import { Router } from "express";
-import { LoginController, CallbackController, logOutController, getMe } from "../controllers/auth.controller.js"
+import { LoginController, CallbackController,refreshAccessToken, logOutController, getMe } from "../controllers/auth.controller.js"
 import { verifyJwt } from "../middlewares/auth.middlewares.js";
 const router = Router();
 
 //LOGIN ROUTE - Manages both signup and login
-router.get("/login", LoginController);
+router.route("/login").get(LoginController);
 
-router.get("/callback",CallbackController)
+router.route("/callback").get(CallbackController)
 
-router.get("/logout",logOutController)
+router.route("/logout").get(logOutController)
 
-router.get("/me", verifyJwt,getMe)
+router.route("/refresh-token").post(refreshAccessToken)
+
+router.route("/me").get(verifyJwt,getMe)
 
 
 export default router;
